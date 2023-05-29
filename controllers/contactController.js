@@ -1,5 +1,10 @@
 const createContact = (req, res) => {
     console.log(req.body)
+    const {name, email} = req.body
+    if(!name || !email){
+        res.status(400);
+        throw new Error("All fields are required");
+    }
     res.status(201).json({message: "Create a contact"});
 }
 
