@@ -36,7 +36,7 @@ const errorHandler = (err, req, res, next) => {
 
         
         default:
-            res.json({title:"No error"})
+            res.json({title: "Invalid"})
         
 
     }
