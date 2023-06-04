@@ -33,34 +33,59 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
+
   if (!email || !password) {
     res.status(400);
-    throw new Error('All fields are required');
+    throw new Error('Email and password are required');
   }
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(400);
+    res.status(401);
     throw new Error('Invalid email or password');
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
-  if (!isPasswordMatch) {
-    res.status(400);
+  // const isMatch = await bcrypt.compare(password, user.password);
+
+  // if (!isMatch) {
+  //   res.status(401);
+  //   throw new Error('Invalid email or password');
+  // }
+
+  // // Generate JWT token
+  // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+  //   expiresIn: '1h',
+  // });
+
+  if(user && (await bcrypt.compare(password, user.password))){
+    const accessToken = jwt.sign(
+      { 
+        user: {
+          _id: user._id,
+          userName: user.userName,
+          email: user.email,
+        },
+      }, 
+      process.env.JWT_SECRET, 
+      {
+      expiresIn: '1h',
+    });
+  }else{
+    res.status(401);
     throw new Error('Invalid email or password');
   }
 
-  // Return the user details
-  res.status(200).json({
-    message: 'Login successful',
+  res.json({ 
+    message: "Logged in user", 
     user: {
       _id: user._id,
       userName: user.userName,
       email: user.email,
     },
   });
+
   
   });
 
