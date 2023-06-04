@@ -34,9 +34,15 @@ const errorHandler = (err, req, res, next) => {
             stackTrace: err.stack})
             break;
 
+        case constants.OK:
+            res.json({title:"Ok",
+            message: err.message,
+            stackTrace: err.stack})
+            break;
+
         
         default:
-            res.json({title: "Invalid"})
+            res.json({title: statusCode})
         
 
     }

@@ -4,4 +4,5 @@ exports.constants = {
     SERVER_ERROR: 500,
     UNAUTHORIZED: 501,
     FORBIDDEN: 403,
+    OK: 200,
 }
