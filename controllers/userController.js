@@ -33,6 +33,55 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
+  // const { email, password } = req.body;
+
+  // if (!email || !password) {
+  //   res.status(400);
+  //   throw new Error('Email and password are required');
+  // }
+
+  // const user = await User.findOne({ email });
+
+  // if (!user) {
+  //   res.status(401);
+  //   throw new Error('Invalid email or password');
+  // }
+
+  // const isMatch = await bcrypt.compare(password, user.password);
+
+  // if (!isMatch) {
+  //   res.status(401);
+  //   throw new Error('Invalid email or password');
+  // }
+
+  // // Generate JWT token
+  // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+  //   expiresIn: '1h',
+  // });
+
+  // if(user && (await bcrypt.compare(password, user.password))){
+  //   const accessToken = jwt.sign(
+  //     { 
+  //       user: {
+  //         _id: user._id,
+  //         userName: user.userName,
+  //         email: user.email,
+        
+  //       },
+  //     }, 
+  //     process.env.JWT_SECRET, 
+  //     {
+  //     expiresIn: '1h',
+  //   });
+  // }else{
+  //   res.status(401);
+  //   throw new Error('Invalid email or password');
+  // }
+
+  // res.json({
+  //   message: "Login user"
+  // })
+
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -47,45 +96,27 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid email or password');
   }
 
-  // const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
-  // if (!isMatch) {
-  //   res.status(401);
-  //   throw new Error('Invalid email or password');
-  // }
-
-  // // Generate JWT token
-  // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-  //   expiresIn: '1h',
-  // });
-
-  if(user && (await bcrypt.compare(password, user.password))){
-    const accessToken = jwt.sign(
-      { 
-        user: {
-          _id: user._id,
-          userName: user.userName,
-          email: user.email,
-        },
-      }, 
-      process.env.JWT_SECRET, 
-      {
-      expiresIn: '1h',
-    });
-  }else{
+  if (!isMatch) {
     res.status(401);
     throw new Error('Invalid email or password');
   }
 
-  res.json({ 
-    message: "Logged in user", 
+  // Generate JWT token
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
+
+  res.json({
+    message: 'Login successful',
     user: {
       _id: user._id,
       userName: user.userName,
       email: user.email,
     },
+    token,
   });
-
   
   });
 
